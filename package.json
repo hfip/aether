@@ -1,0 +1,27 @@
+{
+  "name": "aether",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "أثير — عميل ستريمو بواجهة عربية وتشغيل MKV وDASH وHLS داخل التطبيق",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@rollup/plugin-terser": "^1.0.2",
+    "@rollup/wasm-node": "^4.68.8",
+    "sucrase": "^3.35.1"
+  }
+}

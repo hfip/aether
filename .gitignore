@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.ipa
+.DS_Store
+
+# XcodeGen output and build products
+ios/Aether.xcodeproj/
+ios/build/
+ios/Payload/
+ios/DerivedData/
+xcuserdata/
+
+# Generated at build time
+ios/Aether/Web/*
+!ios/Aether/Web/.gitkeep
+ios/Aether/Assets.xcassets/AppIcon.appiconset/*.png
