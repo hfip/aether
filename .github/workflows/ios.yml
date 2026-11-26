@@ -1,0 +1,69 @@
+name: iOS IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-ipa
+  cancel-in-progress: true
+
+jobs:
+  ipa:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build the web app
+        run: |
+          npm ci
+          npm run build
+
+      - name: Bundle the web app into the iOS target
+        run: |
+          rm -rf ios/Aether/Web
+          mkdir -p ios/Aether/Web
+          cp -R dist/. ios/Aether/Web/
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate the Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Build unsigned
+        working-directory: ios
+        run: |
+          xcodebuild \
+            -project Aether.xcodeproj \
+            -scheme Aether \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package the IPA
+        working-directory: ios
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/Aether.app Payload/
+          zip -qry Aether-unsigned.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aether-unsigned-ipa
+          path: ios/Aether-unsigned.ipa
+          if-no-files-found: error
